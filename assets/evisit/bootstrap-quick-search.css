@@ -1,0 +1,14 @@
+.form-action-clear {
+  display: none;
+  cursor: pointer;
+  pointer-events: all;
+}
+.form-action-clear:before {
+  color: #777777;
+}
+.form-action-clear:hover:before {
+  color: #333333;
+}
+.has-feedback .form-action-clear {
+  display: block;
+}
