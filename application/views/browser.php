@@ -316,9 +316,9 @@ $(".show_menu").click(function(){
                                             <th>
                                                 ID Karyawan          
                                             </th>
-                                            <th>
+                                            <!-- <th>
                                                 Nama Karyawan             
-                                            </th>
+                                            </th> -->
                                             <th>
                                                 Folder Forbidden
                                             </th>
@@ -327,13 +327,17 @@ $(".show_menu").click(function(){
                                     <tbody id="simpan_akses">
                                         <tr>
                                             <td>
-                                                <input type=text name="idk">
+                                                <select id="idk" name="idk" class="form-control" onchange="pick_karyawan()" required>
+                                                        <option value="">--Pilih--</option>
+                                                </select>
+                                                <span class="help-block"></span>
                                             </td>
-                                            <td>
-                                                <input type=text name="nmk">
-                                            </td>
+                                            <!-- <td>
+                                                
+                                            </td> -->
                                             <td>
                                                 <input type=text name="ff">
+                                                <input type=hidden name="nmk">
                                             </td>
                                         </tr>
                                     </tbody>
@@ -379,7 +383,50 @@ $(".show_menu").click(function(){
     <script>
 
         $(document).ready(function(){
+            dropkaryawan();
         });
+
+        function dropkaryawan()
+        {
+            $.ajax({
+            url : "<?php echo base_url() ?>Akses/drop_karyawan",
+            type: "GET",
+            dataType: "JSON",
+            success: function(data)
+                {   
+                    var select = document.getElementById('idk');                
+                    var option;
+                    for (var i = 0; i < data.length; i++) {
+                        option = document.createElement('option');
+                        option.value = data[i]["id_karyawan"]
+                        option.text = data[i]["nama_karyawan"];
+                        select.add(option);                    
+                    }
+                },
+            error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert('Error get data from ajax');
+                }
+            });
+        }
+
+        function pick_karyawan()
+        {
+            var id_karyawan = $('[name="idk"]').val();
+            $.ajax({
+                url : "<?php echo base_url() ?>Akses/pick_karyawan/"+id_karyawan,
+                type: "GET",
+                dataType: "JSON",
+                success: function(data)
+                    {   
+                        $('[name="nmk"]').val(data[0]['nama_karyawan']);
+                    },
+                error: function (jqXHR, textStatus, errorThrown)
+                    {
+                        alert('Error get data from ajax');
+                    }
+            });
+        }
 
         function kirim_id_karyawan(){
                 console.log($('#id_karyawan').val());
@@ -491,7 +538,7 @@ $(".show_menu").click(function(){
                       $tr = $('<tr>').append(
                             $('<td>'+(i+1)+'<input type=hidden name="nomor[]" value="'+i+'" readonly><input type=hidden name="ID[]" value='+data[i]["ID"]+' readonly></td>'),
                             $('<td>'+'<input type=text name="ID_KARYAWAN[]" value='+data[i]["ID_KARYAWAN"]+' readonly></td>'),
-                            $('<td>'+'<input type=text name="NAMA[]" value='+data[i]["NAMA"]+' readonly></td>'),
+                            $('<td>'+'<input type=text name="NAMA[]" value="'+data[i]["NAMA"]+'" readonly></td>'),
                             $('<td>'+'<input type=text name="FOLDER_FORBIDDEN[]" value='+data[i]["FOLDER_FORBIDDEN"]+'></td>'),
                             $('<td>'+'<Button type=Button name="HAPUS[]" class="btn button-block btn-danger" onclick="delete_akses('+data[i]["ID"]+')" ><span class="glyphicon glyphicon-remove-circle"><span></Button></td>')
                             ).appendTo('#data_akses');

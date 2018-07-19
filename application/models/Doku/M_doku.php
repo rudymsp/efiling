@@ -89,4 +89,16 @@ class M_doku extends CI_Model {
         return TRUE;
     }
 
+    function getdrop_karyawan()
+    {
+        $que = $this->db->get('karyawan');
+        return $que->result();
+    }
+
+    function get_karyawan($id)
+    {
+        $this->db->where("id_karyawan",$id);
+        $que= $this->db->get('karyawan');
+        return $que->result();
+    }
 }
